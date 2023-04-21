@@ -74,7 +74,7 @@ def Histogram(imgin, imgout):
     scale = 1200
     for r in range(0, L):
         cv2.line(imgout,(r, M-1), (r, M-1-(int)(scale*p[r])), (255,255,0))
-    return
+    return imgout
 
 def HistogramEqualization(imgin, imgout):
     M, N = imgin.shape
@@ -139,7 +139,7 @@ def HistogramStatistics(imgin, imgout):
                 imgout[x, y] = (C*imgin[x, y]).astype(np.uint8)
             else:
                 imgout[x, y] = imgin[x, y]
-    return
+    return imgout
 
 def MySmoothing(imgin, imgout):
     M, N = imgin.shape
@@ -155,6 +155,7 @@ def MySmoothing(imgin, imgout):
                 for t in range(-b, b+1):
                     res = res + w[s+a, t+b]*imgin[x+s, y+t]
             imgout[x, y] = res.astype(np.uint8)
+    return imgout
 
 def Smoothing(imgin):
     M, N = imgin.shape
@@ -204,6 +205,7 @@ def MedianFilter(imgin, imgout):
                     w[s+a, t+b] = imgin[x+s, y+t]
             r = MySort(w)
             imgout[x, y] = r
+    return imgout
 
 def MySharpen(imgin, imgout):
     M, N = imgin.shape
@@ -233,7 +235,7 @@ def MySharpen(imgin, imgout):
             if r > L-1:
                 r = L-1
             imgout[x, y] = r
-
+    return imgout
 
 def Sharpen(imgin):
     w = np.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]], np.int32)
@@ -272,7 +274,8 @@ def MyGradient(imgin, imgout):
                 g = 0
             if g > L-1:
                 g = L-1
-            imgout[x,y] = g
+            imgout[x,y] = g    
+    return imgout
 
 def Gradient(imgin):
     wx = np.array([[-1, -2, -1], [0, 0, 0], [1, 2, 1]], np.int32)
