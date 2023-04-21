@@ -10,6 +10,7 @@ def Negative(imgin, imgout):
             r = imgin[x, y]
             s = L - 1 - r
             imgout[x, y] = s
+    return imgout
 
 def Logarit(imgin, imgout):
     M, N = imgin.shape
@@ -22,6 +23,7 @@ def Logarit(imgin, imgout):
                 r = 1
             s = c*np.log(1.0 + r)
             imgout[x, y] = s.astype(np.uint8)
+    return imgout
 
 def Power(imgin, imgout):
     M, N = imgin.shape
@@ -32,6 +34,7 @@ def Power(imgin, imgout):
             r = imgin[x, y]
             s = c*np.power(r, gamma)
             imgout[x, y] = s.astype(np.uint8)
+    return imgout
 
 def PiecewiseLinear(imgin, imgout):
     M, N = imgin.shape
@@ -54,6 +57,7 @@ def PiecewiseLinear(imgin, imgout):
             else:
                 s = (L-1-s2)/(L-1-r2)*(r-r2) + s2
             imgout[x, y] = s.astype(np.uint8)
+    return imgout
 
 def Histogram(imgin, imgout):
     M, N = imgin.shape
@@ -94,7 +98,8 @@ def HistogramEqualization(imgin, imgout):
         for y in range(0, N):
             r = imgin[x, y]
             imgout[x, y] = s[r].astype(np.uint8)
- 
+    return imgout
+
 def LocalHistogram(imgin, imgout):
     M, N = imgin.shape
     m = 3
@@ -109,6 +114,7 @@ def LocalHistogram(imgin, imgout):
                     w[s+a, t+b] = imgin[x+s, y+t]
             cv2.equalizeHist(w, w)
             imgout[x, y] = w[a, b]
+    return imgout
 
 def HistogramStatistics(imgin, imgout):
     M, N = imgin.shape
