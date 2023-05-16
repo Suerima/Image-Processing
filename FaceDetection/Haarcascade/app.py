@@ -29,3 +29,14 @@ def detectAndDisplay(frame):
             frame = cv.circle(frame, eye_center, radius, (255, 0, 0 ), 4)
 
     return frame
+def main_loop():
+    camera_device = 0
+    cap = cv.VideoCapture(camera_device)
+    stframe = st.empty()
+    while True:
+        ret, frame = cap.read()
+        if frame is None:
+            st.error('No captured frame')
+            break
+        frame = detectAndDisplay(frame)
+        stframe.image(frame, channels="BGR")

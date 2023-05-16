@@ -17,16 +17,7 @@ selected_chapter = st.sidebar.selectbox("Select an option", options)
 if selected_chapter == "Facebook":
     fb.main_loop()
 elif selected_chapter == "Haarcascade":
-    camera_device = 0
-    cap = cv.VideoCapture(camera_device)
-    stframe = st.empty()
-    while True:
-        ret, frame = cap.read()
-        if frame is None:
-            st.error('No captured frame')
-            break
-        frame = ha.detectAndDisplay(frame)
-        stframe.image(frame, channels="BGR")
+    ha.main_loop()
 
 
 st.button("Re-run")
