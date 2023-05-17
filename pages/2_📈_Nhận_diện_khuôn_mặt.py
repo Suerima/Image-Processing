@@ -7,27 +7,6 @@ st.markdown("# Nhận diện khuôn mặt")
 FRAME_WINDOW = st.image([])
 cap = cv.VideoCapture(0)
 
-# if 'stop' not in st.session_state:
-#     st.session_state.stop = False
-#     stop = False
-
-# press = st.button('Stop')
-# if press:
-#     if st.session_state.stop == False:
-#         st.session_state.stop = True
-#         cap.release()
-#     else:
-#         st.session_state.stop = False
-
-# print('Trang thai nhan Stop', st.session_state.stop)
-
-# if 'frame_stop' not in st.session_state:
-#     frame_stop = cv.imread('./FaceRecognition/stop.jpg')
-#     st.session_state.frame_stop = frame_stop
-#     print('Đã load stop.jpg')
-
-# if st.session_state.stop == True:
-#     FRAME_WINDOW.image(st.session_state.frame_stop, channels='BGR')
 
 
 svc = joblib.load('./FaceRecognition/svc.pkl')
