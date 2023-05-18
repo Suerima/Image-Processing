@@ -2,7 +2,9 @@ import cv2
 import numpy as np
 
 L = 256
-#-----Function Chapter 5-----#
+
+# Chương 5: Khôi phục ảnh
+
 def CreateMotionfilter(M, N):
     H = np.zeros((M,N), np.complex)
     a = 0.1

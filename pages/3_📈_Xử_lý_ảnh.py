@@ -3,6 +3,7 @@ import time
 import numpy as np
 import ImageProcessing.Chapter3 as c3
 import ImageProcessing.Chapter4 as c4
+import ImageProcessing.Chapter5 as c5
 import ImageProcessing.Chapter9 as c9
 import cv2
 import object_detection as od
@@ -26,91 +27,61 @@ if image_file is not None:
 
     if selected_chapter == "Chapter 3":
         selected = st.sidebar.radio("Options", ["Negative", "Logarit", "Power", "PiecewiseLinear", "Histogram", "HistogramEqualization",
-                                                    "LocalHistogram", "HistogramStatistics", "MySmoothing", "Smoothing", "SmoothingGauss",
-                                                    "MedianFilter", "MySharpen", "Sharpen", "UnSharpMasking", "MyGradient", "Gradient"])
+                                                "HistogramEqualizationColor", "LocalHistogram", "HistogramStatistics", 
+                                                "BoxFilter", "GaussFilter","Threshold", "MedianFilter", "Sharpen", "Gradient"])
             
-
         if selected == "Negative":
-            imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.Negative(imgin, imgout)
+            processed_image = c3.Negative(imgin)
         elif selected == "Logarit":
-            imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.Logarit(imgin, imgout)
+            processed_image = c3.Logarit(imgin)
         elif selected == "Power":
-            imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.Power(imgin, imgout)
+            processed_image = c3.Power(imgin)
         elif selected == "PiecewiseLinear":
-            imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.PiecewiseLinear(imgin, imgout)
+            processed_image = c3.PiecewiseLinear(imgin)
         elif selected == "Histogram":
-            imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.Histogram(imgin, imgout)
+            processed_image = c3.Histogram(imgin)
         elif selected == "HistogramEqualization":
-            imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.HistogramEqualization(imgin, imgout)
+            processed_image = c3.HistEqual(imgin)
+        elif selected == "HistogramEqualizationColor":
+            imgin = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+            processed_image = c3.HistEqualColor(imgin)
         elif selected == "LocalHistogram":
-            imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.LocalHistogram(imgin, imgout)
+            processed_image = c3.LocalHist(imgin)
         elif selected == "HistogramStatistics":
-            imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.HistogramStatistics(imgin, imgout)
-        elif selected == "MySmoothing":
-            imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.MySmoothing(imgin, imgout)
-        elif selected == "Smoothing":
-            # imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.Smoothing(imgin)
-        elif selected == "SmoothingGauss":
-            # imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.SmoothingGauss(imgin)
+            processed_image = c3.HistStat(imgin)
+        elif selected == "BoxFilter":
+            processed_image = c3.BoxFilter(imgin)
+        elif selected == "GaussFilter":
+            processed_image = c3.GaussFilter(imgin)
+        elif selected == "Threshold":
+            processed_image = c3.Threshold(imgin)
         elif selected == "MedianFilter":
-            imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.MedianFilter(imgin, imgout)
-        elif selected == "MySharpen":
-            imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.MySharpen(imgin, imgout)
+            processed_image = c3.MedianFilter(imgin)
         elif selected == "Sharpen":
-            # imgout = np.zeros(imgin.shape, np.uint8)
             processed_image = c3.Sharpen(imgin)
-        elif selected == "UnSharpMasking":
-            # imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.UnSharpMasking(imgin)
-        elif selected == "MyGradient":
-            imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.MyGradient(imgin, imgout)
         elif selected == "Gradient":
-            # imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c3.Gradient(imgin)
-            
+            processed_image = c3.Gradient(imgin)           
     elif selected_chapter == "Chapter 4":
         selected = st.sidebar.radio("Options", ["Spectrum", "FrequencyFilter", "DrawFilter", "RemoveMoire"])
-            
         if selected == "Spectrum":
-            # imgout = np.zeros(imgin.shape, np.uint8)
             processed_image = c4.Spectrum(imgin)
         elif selected == "FrequencyFilter":
-            # imgout = np.zeros(imgin.shape, np.uint8)
             processed_image = c4.FrequencyFilter(imgin)
         elif selected == "DrawFilter":
-            # imgout = np.zeros(imgin.shape, np.uint8)
-            processed_image = c4.DrawFilter(imgin)
+            imgin = Image.new('RGB', (5, 5),  st.get_option("theme.backgroundColor"))
+            processed_image = c4.DrawNotchRejectFilter()
         elif selected == "RemoveMoire":
-            # imgout = np.zeros(imgin.shape, np.uint8)
             processed_image = c4.RemoveMoire(imgin)
-    # elif selected_chapter == "Chapter 5":
-    #     selected = st.sidebar.radio("Options", ["CreateMotionfilter", "CreateMotionNoise", "CreateInverseMotionfilter", "DenoiseMotion"])
-    #     if selected == "Spectrum":
-    #         # imgout = np.zeros(imgin.shape, np.uint8)
-    #         processed_image = c5.Spectrum(imgin)
-    #     elif selected == "FrequencyFilter":
-    #         # imgout = np.zeros(imgin.shape, np.uint8)
-    #         processed_image = c5.FrequencyFilter(imgin)
-    #     elif selected == "DrawFilter":
-    #         # imgout = np.zeros(imgin.shape, np.uint8)
-    #         processed_image = c5.DrawFilter(imgin)
-    #     elif selected == "RemoveMoire":
-    #         # imgout = np.zeros(imgin.shape, np.uint8)
-    #         processed_image = c5.RemoveMoire(imgin)
+
+    elif selected_chapter == "Chapter 5":
+        selected = st.sidebar.radio("Options", ["CreateMotionNoise", "DenoiseMotion", "DenoisestMotion"])
+        if selected == "CreateMotionNoise":
+            processed_image = c5.CreateMotionNoise(imgin)
+        elif selected == "DenoiseMotion":
+            processed_image = c5.DenoiseMotion(imgin)
+        elif selected == "DenoisestMotion":
+            temp = cv2.medianBlur(imgin, 7)
+            processed_image = c5.DenoiseMotion(temp)        
     elif selected_chapter == "Chapter 9":
         selected = st.sidebar.radio("Options", ["ConnectedComponent", "CountRice"])
         if selected == "ConnectedComponent":

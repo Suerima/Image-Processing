@@ -1,129 +1,144 @@
-import cv2
 import numpy as np
+import cv2
 
 L = 256
-#-----Function Chapter 3-----#
-def Negative(imgin, imgout):
+
+# 1
+def Negative(imgin):
     M, N = imgin.shape
+    imgout = np.zeros((M,N), np.uint8)
     for x in range(0, M):
         for y in range(0, N):
-            r = imgin[x, y]
-            s = L - 1 - r
-            imgout[x, y] = s
+            r = imgin[x,y]
+            s = L-1-r
+            imgout[x,y] = s
     return imgout
 
-def Logarit(imgin, imgout):
+# 2
+def Logarit(imgin):
     M, N = imgin.shape
+    imgout = np.zeros((M,N), np.uint8)
     c = (L-1)/np.log(L)
-
     for x in range(0, M):
         for y in range(0, N):
-            r = imgin[x, y]
+            r = imgin[x,y]
             if r == 0:
                 r = 1
-            s = c*np.log(1.0 + r)
-            imgout[x, y] = s.astype(np.uint8)
+            s = c*np.log(1+r)
+            imgout[x,y] = np.uint8(s)
     return imgout
 
-def Power(imgin, imgout):
+# 3
+def Power(imgin):
     M, N = imgin.shape
+    imgout = np.zeros((M,N), np.uint8)
     gamma = 5.0
-    c = np.power(L - 1, 1 - gamma)
+    c = np.power(L-1,1-gamma)
     for x in range(0, M):
         for y in range(0, N):
-            r = imgin[x, y]
-            s = c*np.power(r, gamma)
-            imgout[x, y] = s.astype(np.uint8)
+            r = imgin[x,y]
+            s = c*np.power(r,gamma)
+            imgout[x,y] = np.uint8(s)
     return imgout
 
-def PiecewiseLinear(imgin, imgout):
+# 4
+def PiecewiseLinear(imgin):
     M, N = imgin.shape
-    rmin, rmax, rminloc, rmaxloc = cv2.minMaxLoc(imgin)
+    imgout = np.zeros((M,N), np.uint8)
+    rmin, rmax, vi_tri_rmin, vi_tri_rmax = cv2.minMaxLoc(imgin)
     r1 = rmin
-    if rmin == 0:
-        r1 = 1
     s1 = 0
     r2 = rmax
-    if rmax == L-1:
-        r2 = L - 2
-    s2 = L - 1
+    s2 = L-1
     for x in range(0, M):
         for y in range(0, N):
-            r = imgin[x, y]
+            r = imgin[x,y]
             if r < r1:
                 s = s1/r1*r
             elif r < r2:
                 s = (s2-s1)/(r2-r1)*(r-r1) + s1
             else:
                 s = (L-1-s2)/(L-1-r2)*(r-r2) + s2
-            imgout[x, y] = s.astype(np.uint8)
+            imgout[x,y] = np.uint8(s)
     return imgout
 
-def Histogram(imgin, imgout):
+# 5
+def Histogram(imgin):
     M, N = imgin.shape
+    imgout = np.zeros((M,L), np.uint8) + 255
     h = np.zeros(L, np.int32)
     for x in range(0, M):
         for y in range(0, N):
-            r = imgin[x, y]
-            h[r] = h[r] + 1
-
-    p = np.zeros(L, np.float)
+            r = imgin[x,y]
+            h[r] = h[r]+1
+    p = h/(M*N)
+    scale = 2000
     for r in range(0, L):
-        p[r] = h[r]/(M*N)
-
-    scale = 1200
-    for r in range(0, L):
-        cv2.line(imgout,(r, M-1), (r, M-1-(int)(scale*p[r])), (255,255,0))
+        cv2.line(imgout,(r,M-1),(r,M-1-int(scale*p[r])), (0,0,0))
     return imgout
 
-def HistogramEqualization(imgin, imgout):
+# 6
+def HistEqual(imgin):
     M, N = imgin.shape
+    imgout = np.zeros((M,N), np.uint8)
     h = np.zeros(L, np.int32)
     for x in range(0, M):
         for y in range(0, N):
-            r = imgin[x, y]
-            h[r] = h[r] + 1
+            r = imgin[x,y]
+            h[r] = h[r]+1
+    p = h/(M*N)
 
-    p = np.zeros(L, np.float)
-    for r in range(0, L):
-        p[r] = h[r]/(M*N)
-
-    s = np.zeros(L, np.float)
+    s = np.zeros(L, np.float64)
     for k in range(0, L):
-        for j in range(0, k + 1):
+        for j in range(0, k+1):
             s[k] = s[k] + p[j]
-        s[k] = s[k]*(L-1)
 
     for x in range(0, M):
         for y in range(0, N):
-            r = imgin[x, y]
-            imgout[x, y] = s[r].astype(np.uint8)
+            r = imgin[x,y]
+            imgout[x,y] = np.uint8((L-1)*s[r])
     return imgout
 
-def LocalHistogram(imgin, imgout):
+# 7
+def HistEqualColor(imgin):
+    B = imgin[:,:,0]
+    G = imgin[:,:,1]
+    R = imgin[:,:,2]
+    B = cv2.equalizeHist(B)
+    G = cv2.equalizeHist(G)
+    R = cv2.equalizeHist(R)
+    imgout = np.array([B, G, R])
+    imgout = np.transpose(imgout, axes = [1,2,0]) 
+    return imgout
+
+# 8
+def LocalHist(imgin):
     M, N = imgin.shape
+    imgout = np.zeros((M,N), np.uint8)
     m = 3
     n = 3
+    w = np.zeros((m,n), np.uint8)
     a = m // 2
     b = n // 2
-    w = np.zeros((m,n), np.uint8)
     for x in range(a, M-a):
         for y in range(b, N-b):
             for s in range(-a, a+1):
                 for t in range(-b, b+1):
-                    w[s+a, t+b] = imgin[x+s, y+t]
-            cv2.equalizeHist(w, w)
-            imgout[x, y] = w[a, b]
+                    w[s+a,t+b] = imgin[x+s,y+t]
+            w = cv2.equalizeHist(w)
+            imgout[x,y] = w[a,b]
     return imgout
 
-def HistogramStatistics(imgin, imgout):
+# 9
+def HistStat(imgin):
     M, N = imgin.shape
-    [mG, sigmaG] = cv2.meanStdDev(imgin)
+    imgout = np.zeros((M,N), np.uint8)
     m = 3
     n = 3
+    w = np.zeros((m,n), np.uint8)
     a = m // 2
     b = n // 2
-    w = np.zeros((m,n), np.uint8)
+    mG, sigmaG = cv2.meanStdDev(imgin)
     C = 22.8
     k0 = 0.0
     k1 = 0.1
@@ -133,155 +148,101 @@ def HistogramStatistics(imgin, imgout):
         for y in range(b, N-b):
             for s in range(-a, a+1):
                 for t in range(-b, b+1):
-                    w[s+a, t+b] = imgin[x+s, y+t]
-            [msxy, sigmasxy] = cv2.meanStdDev(w)
-            if (k0*mG <= msxy and msxy <= k1*mG) and (k2*sigmaG <= sigmasxy and sigmasxy <= k3*sigmaG):
-                imgout[x, y] = (C*imgin[x, y]).astype(np.uint8)
+                    w[s+a,t+b] = imgin[x+s,y+t]
+            msxy, sigmasxy = cv2.meanStdDev(w)
+            r = imgin[x,y]
+            if (k0*mG <= msxy <= k1*mG) and (k2*sigmaG <= sigmasxy <= k3*sigmaG):
+                imgout[x,y] = np.uint8(C*r)
             else:
-                imgout[x, y] = imgin[x, y]
+                imgout[x,y] = r
     return imgout
 
-def MySmoothing(imgin, imgout):
-    M, N = imgin.shape
-    m = 11
-    n = 11
-    a = m // 2
-    b = m // 2
-    w = np.ones((m,n),np.float)/(m*n)
-    for x in range(a, M-a):
-        for y in range(b, N-b):
-            res = 0.0 
-            for s in range(-a, a+1):
-                for t in range(-b, b+1):
-                    res = res + w[s+a, t+b]*imgin[x+s, y+t]
-            imgout[x, y] = res.astype(np.uint8)
+# 10
+def GaussFilter(imgin):
+    imgout = cv2.GaussianBlur(imgin,(43,43),7.0)
     return imgout
 
-def Smoothing(imgin):
-    M, N = imgin.shape
+# 11
+def BoxFilter(imgin):
     m = 21
     n = 21
-    a = m // 2
-    b = m // 2
-    w = np.ones((m,n),np.float)/(m*n)
-    imgout = cv2.filter2D(imgin,cv2.CV_8UC1, w)
-    # imgout = cv2.blur(imgin, (m,n))
+    w = np.ones((m,n))
+    w = w/(m*n)
+    imgout = cv2.filter2D(imgin,cv2.CV_8UC1,w)
     return imgout
 
-def SmoothingGauss(imgin):
-    M, N = imgin.shape
-    m = 51
-    n = 51
-    a = m // 2
-    b = m // 2
-    sigma = 7.0
-    w = np.zeros((m,n), np.float)
-    for s in range(-a, a+1):
-        for t in range(-b, b+1):
-            w[s+a, t+b] = np.exp(-(s*s + t*t)/(2*sigma*sigma))
-    sum = np.sum(w)
-    w = w/sum
-    imgout = cv2.filter2D(imgin,cv2.CV_8UC1, w)
-    # imgout = cv2.GaussianBlur(imgin, (m,n), 7.0)
+
+# 12
+def Threshold(imgin):
+    temp = cv2.blur(imgin, (15,15))
+    retval, imgout = cv2.threshold(temp,64,255,cv2.THRESH_BINARY)
     return imgout
 
-def MySort(w):
-    m, n = w.shape
-    w = np.reshape(w, m*n)
-    w = np.sort(w)
-    return w[m*n//2]
-
-def MedianFilter(imgin, imgout):
+# 13
+def MedianFilter(imgin):
     M, N = imgin.shape
+    imgout = np.zeros((M,N), np.uint8)
     m = 5
     n = 5
+    w = np.zeros((m,n), np.uint8)
     a = m // 2
     b = n // 2
-    w = np.zeros((m,n), np.uint8)
-    for x in range(a, M-a):
-        for y in range(b, N-b):
+    for x in range(0, M):
+        for y in range(0, N):
             for s in range(-a, a+1):
                 for t in range(-b, b+1):
-                    w[s+a, t+b] = imgin[x+s, y+t]
-            r = MySort(w)
-            imgout[x, y] = r
+                    w[s+a,t+b] = imgin[(x+s)%M,(y+t)%N]
+            w_1D = np.reshape(w, (m*n,))
+            w_1D = np.sort(w_1D)
+            imgout[x,y] = w_1D[m*n//2]
     return imgout
 
-def MySharpen(imgin, imgout):
-    M, N = imgin.shape
-    m = 3
-    n = 3
-    a = m // 2
-    b = m // 2
-    w = np.zeros((m,n),np.int32)
-    w[0,0] = 1
-    w[0,1] = 1
-    w[0,2] = 1
-    w[1,0] = 1
-    w[1,1] = -8
-    w[1,2] = 1
-    w[2,0] = 1
-    w[2,1] = 1
-    w[2,2] = 1
-    for x in range(a, M-a):
-        for y in range(b, N-b):
-            r = 0 
-            for s in range(-a, a+1):
-                for t in range(-b, b+1):
-                    r = r + w[s+a, t+b]*imgin[x+s, y+t]
-            r = imgin[x,y] - r;
-            if r < 0:
-                r = 0
-            if r > L-1:
-                r = L-1
-            imgout[x, y] = r
-    return imgout
-
+# 14
 def Sharpen(imgin):
-    w = np.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]], np.int32)
-    temp = cv2.filter2D(imgin, cv2.CV_32FC1, w)
-    result = imgin - temp
-    result = np.clip(result, 0, L-1)
-    imgout = result.astype(np.uint8)
-    return imgout
+    # Đạo hàm cấp 2 của ảnh
+    w = np.array([[1,1,1],[1,-8,1],[1,1,1]])
+    temp = cv2.filter2D(imgin,cv2.CV_32FC1,w)
 
-def UnSharpMasking(imgin):
-    blur = cv2.GaussianBlur(imgin, (3, 3), 1.0).astype(np.float)
-    mask = imgin - blur
-    k = 10.0
-    imgout = imgin + k*mask
-    imgout = np.clip(imgout, 0, L-1).astype(np.uint8)
+    # Hàm cv2.Laplacian chỉ tính đạo hàm cấp 2
+    # cho bộ lọc có số -4 chính giữa
+    imgout = imgin - temp
+    imgout = np.clip(imgout, 0, L-1)
+    imgout = imgout.astype(np.uint8)
     return imgout
-
-def MyGradient(imgin, imgout):
-    M, N = imgin.shape
-    wx = np.array([[-1, -2, -1], [0, 0, 0], [1, 2, 1]], np.int32)
-    wy = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], np.int32)
-    m = 3
-    n = 3
-    a = m // 2
-    b = m // 2
-    for x in range(a, M-a):
-        for y in range(b, N-b):
-            gx = 0
-            gy = 0
-            for s in range(-a, a+1):
-                for t in range(-b, b+1):
-                    gx = gx + wx[s+a,t+b]*imgin[x+s,y+t]
-                    gy = gy + wy[s+a,t+b]*imgin[x+s,y+t]
-            g = abs(gx) + abs(gy)
-            if g < 0:
-                g = 0
-            if g > L-1:
-                g = L-1
-            imgout[x,y] = g    
-    return imgout
-
+# 15
 def Gradient(imgin):
-    wx = np.array([[-1, -2, -1], [0, 0, 0], [1, 2, 1]], np.int32)
-    wy = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], np.int32)
-    gx = cv2.filter2D(imgin, cv2.CV_32FC1, wx);
-    gy = cv2.filter2D(imgin, cv2.CV_32FC1, wy);
-    g = abs(gx) + abs(gy)
-    imgout = np.clip(g, 0, L-1).astype(np.uint8)
+    sobel_x = np.array([[-1,-2,-1],[0,0,0],[1,2,1]])
+    sobel_y = np.array([[-1,0,1],[-2,0,2],[-1,0,1]])
+
+    # Đạo hàm cấp 1 theo hướng x
+    mygx = cv2.filter2D(imgin, cv2.CV_32FC1, sobel_x)
+    # Đạo hàm cấp 1 theo hướng y
+    mygy = cv2.filter2D(imgin, cv2.CV_32FC1, sobel_y)
+
+    # Lưu ý: cv2.Sobel có hướng x nằm ngang
+    # ngược lại với sách Digital Image Processing
+    gx = cv2.Sobel(imgin,cv2.CV_32FC1, dx = 1, dy = 0)
+    gy = cv2.Sobel(imgin,cv2.CV_32FC1, dx = 0, dy = 1)
+
+    imgout = abs(gx) + abs(gy)
+    imgout = np.clip(imgout, 0, L-1)
+    imgout = imgout.astype(np.uint8)
     return imgout
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

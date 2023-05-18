@@ -10,7 +10,7 @@ cap = cv.VideoCapture(0)
 
 
 svc = joblib.load('./FaceRecognition/svc.pkl')
-mydict = ['BanTot', 'BanThang', 'ThayDuc']
+mydict = ['BanThang', 'BanTot', 'ThayDuc']
 
 def visualize(input, faces, fps, thickness=2):
     if faces[1] is not None:
