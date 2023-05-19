@@ -157,12 +157,12 @@ def HistStat(imgin):
                 imgout[x,y] = r
     return imgout
 
-# 10
+# 11
 def GaussFilter(imgin):
     imgout = cv2.GaussianBlur(imgin,(43,43),7.0)
     return imgout
 
-# 11
+# 10
 def BoxFilter(imgin):
     m = 21
     n = 21

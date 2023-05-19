@@ -3,7 +3,40 @@ import numpy as np
 import cv2 as cv
 import joblib
 
-st.markdown("# Nhận diện khuôn mặt")
+st.set_page_config(page_title="Nhận diện khuôn mặt", page_icon="😊")
+
+st.title("NHẬN DIỆN KHUÔN MẶT")
+st.markdown(
+    f"""
+    <style>
+        [data-testid="stAppViewContainer"] > .main {{
+        background-image: url("https://img.freepik.com/premium-photo/travel-concept-headphones-camera-sketchbook-purse-pencil-keys-wooden-background-flat-lay-top-view-photo-with-copyspace-center_77211-1445.jpg?w=2000");
+        background-size: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: local;
+    }}    
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.sidebar.markdown(
+    f"""
+    <style>
+    [data-testid="stSidebar"] > div:first-child {{
+        background-image: url("https://img.freepik.com/premium-photo/top-view-photo-piggy-bank-calculator-center-plane-car-models-camera-map-magnifier-compass-notebook-passport-cover-plant-isolated-wooden-table-background_352249-4634.jpg?w=2000");
+        background-size: 90%;
+        # background-position: center; 
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
 FRAME_WINDOW = st.image([])
 cap = cv.VideoCapture(0)
 
