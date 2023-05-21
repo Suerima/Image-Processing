@@ -115,7 +115,7 @@ def CreateNotchRejectFilter():
             H[u,v] = h
     return H
 
-def DrawNotchRejectFilter():
+def DrawNotchRejectFilter(imgin):
     H = CreateNotchRejectFilter()
     H = H*(L-1)
     H = H.astype(np.uint8)

@@ -78,7 +78,7 @@ def Histogram(imgin):
     return imgout
 
 # 6
-def HistEqual(imgin):
+def HistogramEqualization(imgin):
     M, N = imgin.shape
     imgout = np.zeros((M,N), np.uint8)
     h = np.zeros(L, np.int32)
@@ -100,7 +100,7 @@ def HistEqual(imgin):
     return imgout
 
 # 7
-def HistEqualColor(imgin):
+def HistogramEqualizationColor(imgin):
     B = imgin[:,:,0]
     G = imgin[:,:,1]
     R = imgin[:,:,2]
@@ -112,7 +112,7 @@ def HistEqualColor(imgin):
     return imgout
 
 # 8
-def LocalHist(imgin):
+def LocalHistogram(imgin):
     M, N = imgin.shape
     imgout = np.zeros((M,N), np.uint8)
     m = 3
@@ -130,7 +130,7 @@ def LocalHist(imgin):
     return imgout
 
 # 9
-def HistStat(imgin):
+def HistogramStatistics(imgin):
     M, N = imgin.shape
     imgout = np.zeros((M,N), np.uint8)
     m = 3
