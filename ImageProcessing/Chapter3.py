@@ -157,11 +157,6 @@ def HistogramStatistics(imgin):
                 imgout[x,y] = r
     return imgout
 
-# 11
-def GaussFilter(imgin):
-    imgout = cv2.GaussianBlur(imgin,(43,43),7.0)
-    return imgout
-
 # 10
 def BoxFilter(imgin):
     m = 21
@@ -171,6 +166,10 @@ def BoxFilter(imgin):
     imgout = cv2.filter2D(imgin,cv2.CV_8UC1,w)
     return imgout
 
+# 11
+def GaussFilter(imgin):
+    imgout = cv2.GaussianBlur(imgin,(43,43),7.0)
+    return imgout
 
 # 12
 def Threshold(imgin):
@@ -209,6 +208,7 @@ def Sharpen(imgin):
     imgout = np.clip(imgout, 0, L-1)
     imgout = imgout.astype(np.uint8)
     return imgout
+
 # 15
 def Gradient(imgin):
     sobel_x = np.array([[-1,-2,-1],[0,0,0],[1,2,1]])
